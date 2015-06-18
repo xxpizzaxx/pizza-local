@@ -15,10 +15,7 @@ import scala.util.{Failure, Success}
  * @param redis instance of a RedisClient
  */
 class LocalScan(redis: RedisClient)(implicit val ex: ExecutionContext) {
-  // serialization
-  /**
-   * Pilot class used to store pilot data when returning it or storing/reading it
-   */
+  case class LocalScanResult(pilots: Seq[Pilot], apiCount: Int, cacheCount: Int)
   implicit def PilotCodecJson = casecodec6(Pilot.apply, Pilot.unapply)("id", "name", "corporation", "corporationName", "alliance", "allianceName")
   val api = new EVEAPI()
 
@@ -27,13 +24,14 @@ class LocalScan(redis: RedisClient)(implicit val ex: ExecutionContext) {
    * @param data list of pilot names
    * @return seq of Pilot objects containing full data
    */
-  def scan(data: String): Seq[Pilot] = {
-    val ids = data.split("\n").grouped(250).flatMap { idSet =>
+  def scan(data: String): LocalScanResult = {
+    val ids = data.split("\\r?\\n").grouped(100).flatMap { idSet =>
       api.eve.CharacterID(idSet).sync() match {
         case Success(r) => r.seq.map {_.characterID.toLong}
         case Failure(f) => Seq.empty
       }
     }.toSeq
+    println(ids)
     val cachedPilots = redis.mget(ids.head.toString, ids.tail.map{_.toString}:_*).getOrElse(Seq.empty).flatten.map{_.decodeOption[Pilot]}.flatten
 
     // end of the test code
@@ -56,8 +54,7 @@ class LocalScan(redis: RedisClient)(implicit val ex: ExecutionContext) {
       redis.mset(results.map{pilot => (pilot.id, pilot.asJson)} :_*)
     }
 
-    println("we got %d pilots out of storage and %d from the API".format(cachedPilots.size, results.size))
     // merge results and return
-    results ++ cachedPilots
+    LocalScanResult(results ++ cachedPilots, results.size, cachedPilots.size)
   }
 }

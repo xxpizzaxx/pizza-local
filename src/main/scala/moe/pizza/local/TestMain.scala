@@ -14,5 +14,5 @@ object TestMain extends App {
   val redis = new RedisClient()
   val scanner = new LocalScan(redis)
   val r = scanner.scan("wheniaminspace")
-  r.foreach {println}
+  r.pilots.foreach {println}
 }
