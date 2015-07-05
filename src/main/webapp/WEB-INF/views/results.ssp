@@ -1,0 +1,57 @@
+<%@ val analysis: moe.pizza.local.Analysis %>
+<%@ val scan: moe.pizza.local.LocalScanResult %>
+
+<div class="ink-grid">
+    <div class="column-group horizontal-gutters">
+        <div class="all-50">
+            <h1>Alliances</h1>
+            <table class="ink-table">
+                <thead>
+                    <tr>
+                        <th class="align-left"></th>
+                        <th class="align-left">Alliance</th>
+                        <th class="align-left">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                #for ((alli, count) <- analysis.alliances.toSeq.sortBy{0-_._2})
+                    <tr>
+                        <td><img src="http://image.eveonline.com/Alliance/${alli.id.toString}_32.png" /> </td>
+                        <td>${alli.name}</td>
+                        <td>${count}</td>
+                    </tr>
+                #end
+                </tbody>
+            </table>
+        </div>
+        <div class="all-50">
+            <h1>Corporations</h1>
+            <table class="ink-table">
+                <thead>
+                    <tr>
+                        <th class="align-left"></th>
+                        <th class="align-left">Corporation</th>
+                        <th class="align-left">Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                #for ((corp, count) <- analysis.corporations.toSeq.sortBy{0-_._2})
+                    <tr>
+                        <td><img src="http://image.eveonline.com/Corporation/${corp.id.toString}_32.png" /></td>
+                        <td>${corp.name}</td>
+                        <td>${count}</td>
+                    </tr>
+                #end
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="column-group">
+        <div class="align-center">
+            <p class="note">
+                This scan was generated with ${scan.cacheCount} results from the cache and ${scan.apiCount} results from the API.</h1>
+            </p>
+        </div>
+    </div>
+
+</div>

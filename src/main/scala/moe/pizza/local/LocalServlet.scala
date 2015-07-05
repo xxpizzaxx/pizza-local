@@ -58,5 +58,7 @@ class LocalServlet extends ScalatraServlet with ScalateSupport {
         }
       </table>
     </html>
+    contentType="text/html"
+    ssp("results.ssp", ("analysis", analysis), ("scan", scan))
   }
 }

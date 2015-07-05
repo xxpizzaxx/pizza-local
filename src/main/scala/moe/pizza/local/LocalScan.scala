@@ -9,13 +9,13 @@ import argonaut._, Argonaut._
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success}
 
+case class LocalScanResult(pilots: Seq[Pilot], apiCount: Int, cacheCount: Int)
 
 /**
  * Class capable of parsing local pilot lists
  * @param redis instance of a RedisClient
  */
 class LocalScan(redis: RedisClient)(implicit val ex: ExecutionContext) {
-  case class LocalScanResult(pilots: Seq[Pilot], apiCount: Int, cacheCount: Int)
   implicit def PilotCodecJson = casecodec6(Pilot.apply, Pilot.unapply)("id", "name", "corporation", "corporationName", "alliance", "allianceName")
   val api = new EVEAPI()
 
