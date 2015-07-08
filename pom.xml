@@ -118,7 +118,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Jettylauncher</mainClass>
+                            <mainClass>moe.pizza.local.JettyLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

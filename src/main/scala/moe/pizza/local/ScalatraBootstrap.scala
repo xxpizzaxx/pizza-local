@@ -1,6 +1,7 @@
+package moe.pizza.local
+
 import javax.servlet.ServletContext
 
-import moe.pizza.local.LocalServlet
 import org.scalatra.LifeCycle
 
 class ScalatraBootstrap extends LifeCycle {
